@@ -4,7 +4,7 @@ import ccxt
 
 
 def print_ohlcv(ohlcv):
-    date = datetime.datetime.fromtimestamp(int(ohlcv[0]) / 1000).strftime('%Y-%m-%d %H:%M:%S')
+    date = ccxt.Exchange.iso8601 (ohlcv[0])
 
     print("Time - {}".format(date))
     print("    Open   : {}".format(ohlcv[1]))
@@ -17,8 +17,8 @@ def print_ohlcv(ohlcv):
 def main():
     exchange = ccxt.kraken()
 
-    #timestamps are multiplied by 100 to represent miliseconds
-    last_time = int(time.time() * 1000) - 60000
+    #timestamps are multiplied by 1000 to represent miliseconds
+    last_time = int(time.time() - 60) * 1000
 
     if exchange.hasFetchOHLCV:
         data = exchange.fetch_ohlcv("BTC/USD", '1m', since=last_time)
@@ -26,7 +26,7 @@ def main():
         for d in data:
             print_ohlcv(d)
 
-    print(int(time.time()))
+    print(exchange.iso8601(exchange.milliseconds()))
 
 if __name__ == "__main__":
     main()
